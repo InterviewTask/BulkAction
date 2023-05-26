@@ -1,1 +1,15 @@
-<p>bulk-action works!</p>
+<mat-card>
+  <mat-card-header>
+    <mat-card-title  >Bulk Action</mat-card-title>
+  </mat-card-header>
+  <div class="divider"></div>
+  <mat-card-content>
+    <button class="mx-2" mat-raised-button color="primary" (click)="disableSelected()" >Disable Selected</button>
+    <button class="mx-2" mat-raised-button color="primary" (click)="enableSelected()" >Enable Selected</button>
+    <button class="mx-2" mat-raised-button color="primary" (click)="deleteSelected()" >Delete Selected</button>
+
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-button mat-dialog-close>Close</button>
+  </mat-card-actions>
+</mat-card>

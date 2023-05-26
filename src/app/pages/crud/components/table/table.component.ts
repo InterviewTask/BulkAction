@@ -7,6 +7,7 @@ import { AddUserComponent } from '../add-user/add-user.component';
 import { SelectionModel } from '@angular/cdk/collections';
 import { UserService } from '../../services/user.service';
 import { UserData } from '../../models/user.model';
+import { BulkActionComponent } from '../bulk-action/bulk-action.component';
 
 
 
@@ -146,7 +147,22 @@ export class TableComponent implements OnInit,AfterViewInit  {
   }
 
   bulkAction(){
+    if(this.selection.selected.length < 1){
+      return
+    }
 
+    const config : MatDialogConfig ={
+      panelClass: 'app-full-bleed-dialog',
+      width:'30%',
+      data: this.selection.selected
+    }
+    const ref = this.dialog.open(BulkActionComponent,config)
+
+    ref.afterClosed().subscribe(res=>{
+      this.getUserList();
+      this.selection.clear();
+
+    })
   }
 
 

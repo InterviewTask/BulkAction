@@ -56,6 +56,7 @@ export class UserService {
     const newUser=Array.from({length: item.count}, (_, k) => createUser(item,this.USERS.length+k));
     this.USERS=this.USERS.concat(newUser);
   }
+
   editUser(user:UserData){
     this.USERS.map(item=>{
       if(item.id===user.id){
@@ -64,6 +65,33 @@ export class UserService {
         item.status=user.status
       }
     })
+  }
+
+
+  BulkEnable(user:UserData[]){
+    user.forEach(element => {
+      this.USERS.map(item=>{
+        if(item.id===element.id){
+          item.status='Enable';
+        }
+      })
+    });
+  }
+
+  BulkDisable(user:UserData[]){
+    user.forEach(element => {
+      this.USERS.map(item=>{
+        if(item.id===element.id){
+          item.status='Disable';
+        }
+      })
+    });
+  }
+
+  bulkDelete(users:UserData[]){
+    users.forEach(element => {
+      this.USERS=this.USERS.filter(item=>item.id!==element.id)
+    });
   }
 }
 function createUser(item: any, id: number): UserData {
