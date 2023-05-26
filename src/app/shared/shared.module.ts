@@ -11,11 +11,13 @@ import {MatCardModule} from '@angular/material/card';
 import {MatButtonModule} from '@angular/material/button';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatNativeDateModule} from '@angular/material/core';
+import {MatCheckboxModule} from '@angular/material/checkbox';
 
 
 import { CommonModule } from '@angular/common';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
+import { MatSelectModule } from '@angular/material/select';
 
 /* ================
 / COMPONENTS
@@ -42,6 +44,8 @@ const MODULES = [
   MatNativeDateModule,
   MatPaginatorModule,
   MatSortModule,
+  MatCheckboxModule,
+  MatSelectModule
 
 ]
 

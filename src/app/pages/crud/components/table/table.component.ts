@@ -1,16 +1,15 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { MatDialog, MatDialogClose, MatDialogConfig } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { AddUserComponent } from '../add-user/add-user.component';
+import { SelectionModel } from '@angular/cdk/collections';
+import { UserService } from '../../services/user.service';
+import { UserData } from '../../models/user.model';
 
 
 
-export interface UserData {
-  id: string;
-  name: string;
-  progress: string;
-  fruit: string;
-}
 
 /** Constants used to fill up our data base. */
 const FRUITS: string[] = [
@@ -53,18 +52,25 @@ const NAMES: string[] = [
 
 export class TableComponent implements OnInit,AfterViewInit  {
 
-  displayedColumns: string[] = ['id', 'name', 'progress', 'fruit'];
-  dataSource: MatTableDataSource<UserData>;
-
+  displayedColumns: string[] = ['select','id', 'email', 'status', 'access','date','action'];
+  dataSource!: MatTableDataSource<UserData>;
+  selection = new SelectionModel<any>(true, []);
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor() {
-    // Create 100 users
-    const users = Array.from({length: 100}, (_, k) => createNewUser(k + 1));
+  constructor(
+    private dialog : MatDialog,
+    private userService: UserService
+  ) {
+  }
 
-    // Assign the data to the data source for the table to render
-    this.dataSource = new MatTableDataSource(users);
+  getUserList(){
+    this.userService.getUser().subscribe(res=>{
+      this.dataSource = new MatTableDataSource(res);
+      this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
+    })
+
   }
 
   ngAfterViewInit() {
@@ -73,6 +79,7 @@ export class TableComponent implements OnInit,AfterViewInit  {
   }
 
   ngOnInit(): void {
+    this.getUserList();
 
   }
 
@@ -84,22 +91,66 @@ export class TableComponent implements OnInit,AfterViewInit  {
       this.dataSource.paginator.firstPage();
     }
   }
-}
 
-/** Builds and returns a new User. */
-function createNewUser(id: number): UserData {
-  const name =
-    NAMES[Math.round(Math.random() * (NAMES.length - 1))] +
-    ' ' +
-    NAMES[Math.round(Math.random() * (NAMES.length - 1))].charAt(0) +
-    '.';
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSource.data.length;
+    return numSelected === numRows;
+  }
 
-  return {
-    id: id.toString(),
-    name: name,
-    progress: Math.round(Math.random() * 100).toString(),
-    fruit: FRUITS[Math.round(Math.random() * (FRUITS.length - 1))],
-  };
+  /** Selects all rows if they are not all selected; otherwise clear selection. */
+  toggleAllRows() {
+    if (this.isAllSelected()) {
+      this.selection.clear();
+      return;
+    }
+
+    this.selection.select(...this.dataSource.data);
+  }
+
+  /** The label for the checkbox on the passed row */
+  checkboxLabel(row?: any): string {
+    if (!row) {
+      return `${this.isAllSelected() ? 'deselect' : 'select'} all`;
+    }
+    return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.position + 1}`;
+  }
+
+  bulkAssgin(){
+    const config : MatDialogConfig ={
+      panelClass: 'app-full-bleed-dialog',
+      width:'30%'
+    }
+    const ref = this.dialog.open(AddUserComponent,config)
+
+    ref.afterClosed().subscribe(res=>{
+      console.log(res);
+      this.userService.createBulk(res)
+      this.getUserList();
+    })
+  }
+  editItem(row:UserData){
+    const config : MatDialogConfig ={
+      panelClass: 'app-full-bleed-dialog',
+      width:'30%',
+      data: row
+    }
+    const ref = this.dialog.open(AddUserComponent,config)
+
+    ref.afterClosed().subscribe(res=>{
+      if(res){
+        this.userService.editUser(res)
+        this.getUserList();
+      }
+    })
+  }
+
+  bulkAction(){
+
+  }
+
+
+
 }
 
 
