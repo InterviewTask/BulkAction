@@ -53,7 +53,7 @@ export class UserService {
   }
 
   createBulk(item:any){
-    const newUser=Array.from({length: item.count}, (_, k) => createUser(item,this.USERS.length+k));
+    const newUser=Array.from({length: item.count}, (_, k) => createUser(item,this.USERS.length+1+k));
     this.USERS=this.USERS.concat(newUser);
   }
 
@@ -63,6 +63,7 @@ export class UserService {
         item.email=user.email;
         item.access=user.access,
         item.status=user.status
+        item.date=user.date
       }
     })
   }
@@ -100,7 +101,7 @@ function createUser(item: any, id: number): UserData {
     email: item.email,
     access: item.access,
     status: item.status ,
-    date: Date.now().toString()
+    date: item.date
   };
 }
 

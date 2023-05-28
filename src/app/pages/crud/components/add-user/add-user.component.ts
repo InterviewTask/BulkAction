@@ -27,6 +27,7 @@ export class AddUserComponent implements OnInit {
       email: [item&& item?.email?item.email:null,[Validators.required,Validators.email]],
       status:[item&& item?.status?item.status:'Enable',[]],
       access:[item&& item?.access?item.access:'User',[]],
+      date:  [item&& item?.date?item.date:Date.now,[]],
       count: [1,[Validators.min(1),Validators.max(20)]],
     })
   }

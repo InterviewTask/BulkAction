@@ -33,6 +33,21 @@
         </mat-select>
       </mat-form-field>
 
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Choose a Date</mat-label>
+        <input
+          matInput
+          [matDatepicker]="releasedAtPicker"
+          formControlName="date"
+          [disabled]="true"
+        />
+
+        <mat-datepicker-toggle matSuffix [for]="releasedAtPicker">
+        </mat-datepicker-toggle>
+
+        <mat-datepicker [disabled]="false" #releasedAtPicker> </mat-datepicker>
+      </mat-form-field>
+
       <mat-form-field
       *ngIf="!data?.id"
        appearance="outline" class="w-100">
